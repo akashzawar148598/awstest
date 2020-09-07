@@ -13,7 +13,7 @@ import os
 #####################################################
 path = os.path.dirname(__file__)
 # print(path)
-url = "http://18.202.212.88/"
+url = "http://13.233.174.122/"
 
 class awstest(unittest.TestCase):
 
