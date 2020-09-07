@@ -1,0 +1,91 @@
+provider "aws" {
+  access_key = "AKIAWIKJ2RHPTFUYJDFE"
+  secret_key = "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"
+  region     = "us-east-1"
+}
+
+resource "aws_db_instance" "dbtera" {
+  allocated_storage    = 20
+  engine               = "postgres"
+  engine_version       = "12.3"
+  identifier           = "dbtera"
+  instance_class       = "db.t2.micro"
+  password             = "amdocs123$"
+  skip_final_snapshot  = true
+  storage_encrypted    = false
+  username             = "postgres"
+  name                 = "mydb"
+  vpc_security_group_ids  = ["${aws_security_group.webserver-sg.id}"]
+}
+
+resource "aws_instance" "example" {
+  ami           = "ami-0bfd8fcad0a150913"
+  instance_type = "t2.micro"
+  key_name = "key"
+  security_groups = ["${aws_security_group.webserver-sg.name}"]
+  user_data = "${file("install-apache.sh")}"
+  depends_on = [aws_db_instance.dbtera]
+}
+
+resource "aws_security_group" "webserver-sg" {
+  name        = "webserver-sg"
+  description = "webserver"
+
+
+  ingress {
+
+    from_port   = 3389 #  By default, the windows server listens on TCP port 3389 for RDP
+    to_port     = 3389
+    protocol =   "tcp"
+
+    cidr_blocks =  ["0.0.0.0/0"]
+  }
+ ingress {
+
+    from_port   = 22
+    to_port     = 22
+    protocol =   "tcp"
+
+    cidr_blocks =  ["0.0.0.0/0"]
+  }
+
+  ingress {
+
+    from_port   = 80
+    to_port     = 80
+    protocol =   "tcp"
+
+    cidr_blocks =  ["0.0.0.0/0"]
+  }
+
+  ingress {
+
+    from_port   = 443
+    to_port     = 443
+    protocol =   "tcp"
+
+    cidr_blocks =  ["0.0.0.0/0"]
+  }
+
+  ingress {
+
+    from_port   = 5432
+    to_port     = 5432
+    protocol =   "tcp"
+
+    cidr_blocks =  ["0.0.0.0/0"]
+  }
+
+  egress {
+
+    from_port   = 0
+    to_port     = 65535
+
+
+    cidr_blocks =  ["0.0.0.0/0"]
+  }
+}
+
+
+
+    protocol =   "tcp"

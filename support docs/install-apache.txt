@@ -1,0 +1,22 @@
+#! /bin/bash
+   sudo yum install postgresql -y
+   cd /var/www/ProjectBook
+   export PGPASSWORD=amdocs123$
+
+cat << EOF > /var/www/ProjectBook/db.sql
+create database lecture;
+\c lecture
+CREATE TABLE USERDATA (FNAME VARCHAR NOT NULL , LNAME VARCHAR NOT NULL , EMAIL TEXT NOT NULL ,USERNAME VARCHAR NOT NULL UNIQUE , PASSWORD TEXT NOT NULL);
+CREATE TABLE BOOKS (ISBN VARCHAR NOT NULL UNIQUE,TITLE VARCHAR NOT NULL,AUTHOR VARCHAR NOT NULL,PUBYEAR INTEGER NOT NULL);
+CREATE TABLE BOOK_RATING(ISBN VARCHAR NOT NULL UNIQUE,USERNAME VARCHAR NOT NULL UNIQUE,RATING INTEGER NOT NULL);
+CREATE TABLE BOOK_RATING(ISBN VARCHAR NOT NULL UNIQUE,USERNAME VARCHAR NOT NULL UNIQUE,REVIEW TEXT NOT NULL);
+\copy BOOKS FROM '/var/www/ProjectBook/books.csv' DELIMITER ',' CSV
+
+EOF
+
+   psql -h mydb1.cgiwitca9s45.us-east-1.rds.amazonaws.com -p 5432 -U postgres -d mydb -f db.sql -w
+   sudo service httpd start
+~                                                                                                                                                                                      
+~                                                                                                                                                                                      
+~                                                                                                                                                                                      
+~                                      
